@@ -131,8 +131,11 @@ background:radial-gradient(circle at 30% 20%,var(--c1),transparent 60%),radial-g
 .game:not(.big) .cover{aspect-ratio:auto;flex:1;min-height:130px}
 .cover .emo{font-size:3.4rem;filter:drop-shadow(0 8px 20px rgba(0,0,0,.5));transition:transform .4s}
 .game.big .cover .emo{font-size:4.6rem}
-.cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .4s}
-.game:hover .cover img,.game:hover .cover .emo{transform:scale(1.06)}
+.cover .bg{position:absolute;inset:-24px;width:calc(100% + 48px);height:calc(100% + 48px);object-fit:cover;filter:blur(18px) brightness(.5) saturate(1.2)}
+.game:not(.big) .cover{padding:18px 0}
+.cover .icon{position:relative;width:clamp(90px,55%,190px);aspect-ratio:1;object-fit:cover;border-radius:18px;
+border:1px solid rgba(255,255,255,.14);box-shadow:0 14px 34px rgba(0,0,0,.6);transition:transform .4s}
+.game:hover .cover .icon,.game:hover .cover .emo{transform:scale(1.06)}
 .badge{position:absolute;top:12px;left:12px;font-family:var(--mono);font-size:.72rem;padding:4px 10px;border-radius:999px;
 background:rgba(10,10,12,.75);border:1px solid var(--line2);backdrop-filter:blur(6px)}
 .badge.dev{color:var(--gold);border-color:rgba(242,193,78,.4)}
@@ -146,8 +149,8 @@ background:rgba(10,10,12,.75);border:1px solid var(--line2);backdrop-filter:blur
 
 /* Video */
 .video{grid-column:span 2;grid-row:span 2;padding:0;justify-content:flex-start;gap:0}
-.yt{position:relative;aspect-ratio:16/9;background:#000;cursor:pointer;border:0;padding:0;width:100%;display:block;border-radius:0}
-.yt img{width:100%;height:100%;object-fit:cover;display:block;opacity:.85;transition:opacity .3s}
+.yt{position:relative;aspect-ratio:16/9;height:auto;overflow:hidden;background:#000;cursor:pointer;border:0;padding:0;width:100%;display:block;border-radius:0}
+.yt img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;opacity:.85;transition:opacity .3s}
 .yt:hover img{opacity:1}
 .yt .pbtn{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:68px;height:48px;border-radius:14px;background:rgba(255,0,0,.9);
 display:grid;place-items:center;transition:transform .2s;box-shadow:0 10px 30px rgba(0,0,0,.5)}
@@ -212,6 +215,7 @@ footer{max-width:1060px;margin:0 auto;padding:30px 18px 48px;color:var(--muted);
   .bar kbd{display:none}
   .nav-links{display:none}
   .screen{height:300px}
+  .cover .icon{width:clamp(90px,42%,160px)}
 }
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
 </style>
@@ -232,7 +236,7 @@ footer{max-width:1060px;margin:0 auto;padding:30px 18px 48px;color:var(--muted);
 
 <!-- ===== HERO ===== -->
 <section class="card hero">
-  <div class="views" id="views" aria-live="polite"><span class="live"></span><span>Viewed by <b id="viewCount">0</b></span></div>
+  <div class="views on" id="views" aria-live="polite"><span class="live"></span><span>Viewed by <b id="viewCount">0</b></span></div>
   <div class="pfp" id="pfp" title="Click me!"><img src="pfp.png" alt="Tah's Roblox avatar" width="120" height="120"></div>
   <div>
     <h1>Tah</h1>
@@ -302,12 +306,12 @@ footer{max-width:1060px;margin:0 auto;padding:30px 18px 48px;color:var(--muted);
 <h2 class="sec" id="journey">📺 Featured video & journey</h2>
 
 <section class="card video">
-  <button class="yt" id="yt" type="button" aria-label="Play video: Ultimate Roblox Bedwars Guide">
-    <img src="https://i.ytimg.com/vi/m4LqGscKxBM/hqdefault.jpg" alt="" loading="lazy" width="480" height="360"><span class="pbtn"></span>
+  <button class="yt" id="yt" type="button" aria-label="Play video">
+    <img id="ytThumb" src="https://i.ytimg.com/vi/m4LqGscKxBM/hqdefault.jpg" alt="" loading="lazy"><span class="pbtn"></span>
   </button>
   <div class="vinfo">
-    <span class="lbl">👑 Ultimate Roblox Bedwars Guide: Best Flags, Best Ms, Crosshair, Breakaway 👑</span>
-    <a class="go" href="https://www.youtube.com/watch?v=m4LqGscKxBM" target="_blank" rel="noopener" style="text-decoration:none">Watch on YouTube</a>
+    <span class="lbl" id="ytTitle">How to Boost FPS in Roblox (+FPS, −Ping)</span>
+    <a class="go" id="ytLink" href="https://www.youtube.com/watch?v=m4LqGscKxBM" target="_blank" rel="noopener" style="text-decoration:none">Watch on YouTube</a>
   </div>
 </section>
 
@@ -383,8 +387,10 @@ footer{max-width:1060px;margin:0 auto;padding:30px 18px 48px;color:var(--muted);
 // Your Discord user ID for the live status. Works only while you're in the Lanyard server (discord.gg/lanyard).
 var DISCORD_ID = "724827225182044161";
 var DISCORD_NAME = "logicplayeryt";
-// Featured video
+// Featured video: to change it, edit only these two lines.
+// VIDEO_ID is the part after "youtu.be/" or "watch?v=" in the link.
 var VIDEO_ID = "m4LqGscKxBM";
+var VIDEO_TITLE = "How to Boost FPS in Roblox (+FPS, −Ping)";
 // View counter (free Abacus API)
 var VIEW_NS = "tah.lol";
 var VIEW_KEY = "views";
@@ -407,9 +413,15 @@ function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {"&":"&am
 Object.keys(THUMBS).forEach(function(id){
   if(!THUMBS[id])return;
   var cover=document.querySelector("#"+id+" .cover");if(!cover)return;
-  var img=new Image();img.alt="";
-  img.onload=function(){cover.insertBefore(img,cover.firstChild);cover.querySelector(".emo").hidden=true;};
-  img.src=THUMBS[id];
+  var icon=new Image();icon.alt="";icon.className="icon";
+  icon.onload=function(){
+    var bg=new Image();bg.alt="";bg.className="bg";bg.src=THUMBS[id];
+    var emo=cover.querySelector(".emo");
+    cover.insertBefore(bg,cover.firstChild);
+    cover.insertBefore(icon,emo);
+    emo.hidden=true;
+  };
+  icon.src=THUMBS[id];
 });
 
 // Cards: staggered entrance + cursor glow
@@ -468,13 +480,22 @@ document.getElementById("copy").addEventListener("click",copyName);
 var pfp=document.getElementById("pfp");
 pfp.addEventListener("click",function(){pfp.classList.remove("flip");void pfp.offsetWidth;pfp.classList.add("flip");});
 
-// YouTube: load the player only when clicked (keeps the page fast)
-var yt=document.getElementById("yt");
+// YouTube: fill in the video from the settings, then load the player only when clicked
+var yt=document.getElementById("yt"),ytThumb=document.getElementById("ytThumb");
+document.getElementById("ytTitle").textContent=VIDEO_TITLE;
+document.getElementById("ytLink").href="https://www.youtube.com/watch?v="+VIDEO_ID;
+yt.setAttribute("aria-label","Play video: "+VIDEO_TITLE);
+ytThumb.src="https://i.ytimg.com/vi/"+VIDEO_ID+"/hqdefault.jpg";
+(function(){ // use the sharper HD thumbnail when the video has one
+  var hd=new Image();
+  hd.onload=function(){if(hd.naturalWidth>120)ytThumb.src=hd.src;};
+  hd.src="https://i.ytimg.com/vi/"+VIDEO_ID+"/maxresdefault.jpg";
+})();
 yt.addEventListener("click",function(){
   if(yt.querySelector("iframe"))return;
   var f=document.createElement("iframe");
   f.src="https://www.youtube-nocookie.com/embed/"+VIDEO_ID+"?autoplay=1&rel=0";
-  f.title="Ultimate Roblox Bedwars Guide";
+  f.title=VIDEO_TITLE;
   f.allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
   f.allowFullscreen=true;
   yt.appendChild(f);yt.style.cursor="default";
@@ -500,23 +521,33 @@ if("IntersectionObserver" in window){
   document.querySelectorAll("b[data-to]").forEach(function(c){io.observe(c);});
 }
 
-// View counter: each browser is counted once, then it just shows the total
+// View counter: every page load (including refresh) adds 1
 (function(){
-  var seen=false;
-  try{seen=localStorage.getItem("tah_viewed")==="1";}catch(e){}
-  fetch("https://abacus.jasoncameron.dev/"+(seen?"get":"hit")+"/"+VIEW_NS+"/"+VIEW_KEY)
-    .then(function(r){if(!r.ok)throw 0;return r.json();})
-    .then(function(d){
-      if(typeof d.value!=="number")return;
-      try{localStorage.setItem("tah_viewed","1");}catch(e){}
-      var el=document.getElementById("viewCount"),to=d.value;
-      document.getElementById("views").classList.add("on");
-      if(reduced){el.textContent=to.toLocaleString();return;}
-      var t0=null;
-      (function step(t){t0=t0||t;var p=Math.min((t-t0)/1000,1);
-        el.textContent=Math.round(to*(1-Math.pow(1-p,3))).toLocaleString();
-        if(p<1)requestAnimationFrame(step);})(performance.now());
-    }).catch(function(){});
+  var el=document.getElementById("viewCount");
+  var last=null;
+  try{last=localStorage.getItem("tah_views_last");}catch(e){}
+  el.textContent=last?Number(last).toLocaleString():"…";
+  function show(to){
+    var from=last?Number(last):0;
+    if(reduced||to<=from){el.textContent=to.toLocaleString();return;}
+    var t0=null;
+    (function step(t){t0=t0||t;var p=Math.min((t-t0)/800,1);
+      el.textContent=Math.round(from+(to-from)*(1-Math.pow(1-p,3))).toLocaleString();
+      if(p<1)requestAnimationFrame(step);})(performance.now());
+  }
+  function hit(tries){
+    fetch("https://abacus.jasoncameron.dev/hit/"+VIEW_NS+"/"+VIEW_KEY,{cache:"no-store"})
+      .then(function(r){if(!r.ok)throw 0;return r.json();})
+      .then(function(d){
+        if(typeof d.value!=="number")throw 0;
+        try{localStorage.setItem("tah_views_last",d.value);}catch(e){}
+        show(d.value);
+      }).catch(function(){
+        if(tries>0)setTimeout(function(){hit(tries-1);},2000);
+        else if(!last)el.textContent="—";
+      });
+  }
+  hit(2);
 })();
 
 // Live Discord status via Lanyard
@@ -554,7 +585,7 @@ var LINKS={
   steam:["https://steamcommunity.com/profiles/76561199072211028/","my Steam profile","RealLogicYT"],
   logicgames:["https://www.roblox.com/communities/464804100/LogicGames#!/about","the LogicGames community","LogicGames"],
   parkour:["https://www.roblox.com/games/6569651364/PARKOUR-50-Stages","PARKOUR 50+ Stages","PARKOUR 50+ Stages"],
-  video:["https://www.youtube.com/watch?v="+VIDEO_ID,"my featured video","Bedwars guide"]
+  video:["https://www.youtube.com/watch?v="+VIDEO_ID,"my featured video","Featured video"]
 };
 function link(k){return '<a href="'+LINKS[k][0]+'" target="_blank" rel="noopener">'+esc(LINKS[k][2])+"</a>";}
 var COMMANDS={
