@@ -5,9 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Tah | LogicPlayerYT</title>
 <meta name="description" content="Developer, gamer and creator. YouTube: LogicPlayerYT. Owner of LG|Logic.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.tah.lol/">
 <meta property="og:title" content="Tah | LogicPlayerYT">
 <meta property="og:description" content="Developer, gamer and creator.">
+<meta property="og:image" content="https://www.tah.lol/pfp.png">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" content="#f2c14e">
+<link rel="canonical" href="https://www.tah.lol/">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👑</text></svg>">
+<link rel="apple-touch-icon" href="pfp.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
@@ -18,56 +25,96 @@
 html{color-scheme:dark}
 body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.5;
 background-image:radial-gradient(60rem 30rem at 50% -10%,rgba(242,193,78,.07),transparent 70%)}
+::selection{background:var(--gold);color:#111}
 main{max-width:1060px;margin:0 auto;padding:40px 18px 28px}
 .bento{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
 .card{position:relative;overflow:hidden;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px;
-color:inherit;text-decoration:none;display:flex;flex-direction:column;justify-content:space-between;gap:10px;transition:border-color .2s}
+color:inherit;text-decoration:none;display:flex;flex-direction:column;justify-content:space-between;gap:10px;
+transition:border-color .2s,transform .2s;animation:rise .55s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--i,0) * 45ms)}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}}
 .card::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .25s;
 background:radial-gradient(260px circle at var(--mx,50%) var(--my,50%),rgba(242,193,78,.14),transparent 70%)}
 .card:hover{border-color:#4a4636}
+a.card:hover{transform:translateY(-2px)}
 .card:hover::before{opacity:1}
 a.card:focus-visible,button:focus-visible,.btn:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+
+/* Hero */
 .hero{grid-column:span 2;grid-row:span 2;align-items:flex-start;gap:18px;justify-content:flex-end;min-height:340px}
-
-/* Circular frame keeping your exact gold border & glow */
-.pfp-wrap{width:132px;height:132px;border-radius:50%;overflow:hidden;flex-shrink:0;border:2px solid var(--gold);box-shadow:0 0 0 6px rgba(242,193,78,.1)}
-/* Zooms in on the Roblox avatar's face */
-.pfp{width:100%;height:100%;object-fit:cover;transform:scale(2.2);transform-origin:50% 18%}
-
+.pfp{position:relative;width:132px;height:132px;flex:none;border-radius:50%;padding:3px;cursor:pointer;
+background:conic-gradient(from var(--a,0deg),var(--gold),#7a5c12,var(--gold),#fff3c4,var(--gold));animation:spin 6s linear infinite}
+@property --a{syntax:"<angle>";inherits:false;initial-value:0deg}
+@keyframes spin{to{--a:360deg}}
+.pfp img{width:100%;height:100%;display:block;border-radius:50%;object-fit:cover;
+background:radial-gradient(circle at 50% 35%,#2a2a31,#141417 70%);border:3px solid var(--card);transition:transform .35s}
+.pfp:hover img{transform:scale(1.06)}
+.pfp.spin img{animation:flip .7s ease}
+@keyframes flip{to{transform:rotateY(360deg)}}
 h1{margin:0;font-size:clamp(2.6rem,7vw,4rem);line-height:1;letter-spacing:-.02em}
 .handle{margin:6px 0 0;color:var(--muted);font-family:var(--mono);font-size:.9rem}
 .roles{margin:10px 0 0}
-.term{grid-column:span 2;grid-row:span 2;padding:0;font-family:var(--mono);font-size:.88rem;background:#0f0f12}
+
+/* Terminal */
+.term{grid-column:span 2;grid-row:span 2;padding:0;font-family:var(--mono);font-size:.88rem;background:#0f0f12;gap:0;justify-content:flex-start;cursor:text}
 .bar{display:flex;gap:7px;align-items:center;padding:12px 16px;border-bottom:1px solid var(--line);color:var(--muted);font-size:.78rem}
 .bar i{width:10px;height:10px;border-radius:50%;background:#2e2e35;display:block}
+.bar i:nth-child(1){background:#ff5f57}.bar i:nth-child(2){background:#febc2e}.bar i:nth-child(3){background:#28c840}
 .bar span{margin-left:8px}
-#out{margin:0;padding:18px 18px 22px;white-space:pre-wrap;word-break:break-word;flex:1;min-height:250px}
-.p{color:var(--gold)}.ok{color:var(--teal)}.err{color:#ff6b6b}
-#out::after{content:"";display:inline-block;width:.55em;height:1.05em;background:var(--text);vertical-align:text-bottom;margin-left:2px;animation:blink 1s steps(1) infinite}
+.bar kbd{margin-left:auto;font:inherit;border:1px solid var(--line);border-radius:5px;padding:0 6px}
+.screen{flex:none;height:300px;overflow-y:auto;padding:18px 18px 16px;scrollbar-width:thin;scrollbar-color:#2e2e35 transparent}
+#out{margin:0;white-space:pre-wrap;word-break:break-word;font:inherit}
+.typing #out::after{content:"";display:inline-block;width:.55em;height:1.05em;background:var(--text);vertical-align:text-bottom;margin-left:2px;animation:blink 1s steps(1) infinite}
 @keyframes blink{50%{opacity:0}}
-.stat b{font-size:2.1rem;line-height:1}
+#cli{display:none;align-items:center;gap:8px;margin-top:2px}
+.ready #cli{display:flex}
+#cmd{flex:1;min-width:0;background:none;border:0;outline:0;color:var(--text);font:inherit;caret-color:var(--gold);padding:0}
+.p{color:var(--gold)}.ok{color:var(--teal)}.err{color:#ff6b6b}.dim{color:var(--muted)}
+#out a{color:var(--teal)}
+
+/* Stats and cards */
+.stat b{font-size:2.1rem;line-height:1;font-variant-numeric:tabular-nums}
 .stat span,.sub{color:var(--muted);font-size:.9rem}
 .lbl{font-size:1.05rem;font-weight:700}
-.go{color:var(--gold);font-family:var(--mono);font-size:.8rem}
+.card .go{color:var(--gold);font-family:var(--mono);font-size:.8rem}
+.card .go::after{content:"→";display:inline-block;margin-left:.4em;transition:transform .2s}
+.card:hover .go::after{transform:translateX(3px)}
 .skills{grid-column:span 2;align-items:flex-start}
 .skills ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
-.skills li{border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-size:.95rem}
-.cs2{grid-column:span 2;grid-row:span 2;padding:0}
-.cs2 img{width:100%;display:block;border-bottom:1px solid var(--line)}
-.cs2 div{padding:18px 22px 22px}
+.skills li{border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-size:.95rem;transition:border-color .2s,transform .2s}
+.skills li:hover{border-color:var(--gold);transform:translateY(-2px)}
+.cs2{grid-column:span 2;grid-row:span 2;padding:0;justify-content:flex-start}
+.cs2 .shot{padding:18px 18px 0;overflow:hidden}
+.cs2 img{width:100%;height:auto;display:block;border-radius:10px;transition:transform .4s}
+.cs2:hover img{transform:scale(1.03)}
+.cs2 .info{padding:16px 22px 22px}
 .cs2 b{color:var(--gold)}
+.steam{grid-column:span 2}
 .groups{grid-column:span 4;align-items:flex-start}
 .row{display:flex;gap:8px;flex-wrap:wrap}
 .btn{font-family:var(--mono);font-size:.85rem;color:var(--text);background:#1b1b20;border:1px solid var(--line);border-radius:10px;padding:9px 14px;text-decoration:none;transition:border-color .2s}
 .btn:hover{border-color:var(--gold)}
 .dc{grid-column:span 2;align-items:flex-start}
+.presence{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:.8rem;color:var(--muted)}
+.presence[hidden]{display:none}
+.dot{width:9px;height:9px;border-radius:50%;background:#80848e;flex:none}
+.dot.online{background:#23a55a;box-shadow:0 0 0 3px rgba(35,165,90,.2)}
+.dot.idle{background:#f0b232}.dot.dnd{background:#f23f43}
 button{font:inherit;font-family:var(--mono);font-size:.85rem;color:var(--text);background:#1b1b20;border:1px solid var(--line);
 border-radius:10px;padding:9px 14px;cursor:pointer;transition:border-color .2s}
 button:hover{border-color:var(--gold)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* Toast */
+#toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);opacity:0;pointer-events:none;
+background:#1b1b20;border:1px solid var(--gold);color:var(--text);font-family:var(--mono);font-size:.85rem;
+padding:10px 16px;border-radius:10px;transition:opacity .25s,transform .25s;z-index:10}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+
 footer{max-width:1060px;margin:0 auto;padding:6px 18px 44px;color:var(--muted);font-family:var(--mono);font-size:.78rem;text-align:center}
-@media(max-width:860px){.bento{grid-template-columns:repeat(2,1fr)}.hero,.term,.cs2,.skills,.groups,.dc{grid-column:span 2}.hero,.term{grid-row:auto}.cs2{grid-row:auto}}
-@media(max-width:520px){.bento{grid-template-columns:1fr}.hero,.term,.cs2,.skills,.groups,.dc{grid-column:auto}}
-@media(prefers-reduced-motion:reduce){#out::after{animation:none}.card,.card::before,button,.btn{transition:none}}
+footer a{color:inherit}
+@media(max-width:860px){.bento{grid-template-columns:repeat(2,1fr)}.hero,.term,.cs2,.skills,.groups,.dc,.steam{grid-column:span 2}.hero,.term,.cs2{grid-row:auto}}
+@media(max-width:520px){.bento{grid-template-columns:1fr}.hero,.term,.cs2,.skills,.groups,.dc,.steam{grid-column:auto}.bar kbd{display:none}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
@@ -75,9 +122,7 @@ footer{max-width:1060px;margin:0 auto;padding:6px 18px 44px;color:var(--muted);f
 <div class="bento">
 
 <section class="card hero">
-  <div class="pfp-wrap">
-    <img class="pfp" src="pfp.png" alt="Tah profile picture">
-  </div>
+  <div class="pfp" id="pfp" title="Click me"><img src="pfp.png" alt="Tah's Roblox avatar" width="132" height="132"></div>
   <div>
     <h1>Tah</h1>
     <p class="handle">LogicPlayerYT • W_RealLogic</p>
@@ -85,16 +130,19 @@ footer{max-width:1060px;margin:0 auto;padding:6px 18px 44px;color:var(--muted);f
   </div>
 </section>
 
-<section class="card term" aria-label="Terminal">
-  <div class="bar"><i></i><i></i><i></i><span>About Me:</span></div>
-  <pre id="out"></pre>
+<section class="card term typing" id="term" aria-label="Interactive terminal">
+  <div class="bar"><i></i><i></i><i></i><span>tah@logic: ~</span><kbd title="Press / to focus">/</kbd></div>
+  <div class="screen" id="screen">
+    <pre id="out" aria-live="polite"></pre>
+    <form id="cli" autocomplete="off"><span class="p">$</span><input id="cmd" spellcheck="false" aria-label="Type a command, for example help"></form>
+  </div>
 </section>
 
 <a class="card stat" href="https://www.youtube.com/@LogicPlayerYT" target="_blank" rel="noopener">
-  <span>📺 YouTube</span><b>2.5K+</b><span>subscribers</span><span class="go">youtube.com/@LogicPlayerYT</span>
+  <span>📺 YouTube</span><b data-to="2500" data-k>2.5K+</b><span>subscribers</span><span class="go">@LogicPlayerYT</span>
 </a>
 <a class="card stat" href="https://discord.gg/draMrWfcRV" target="_blank" rel="noopener">
-  <span>👥 Owner of LG|Logic</span><b>3.4K+</b><span>Discord members</span><span class="go">Join the server</span>
+  <span>👥 Owner of LG|Logic</span><b id="dcCount" data-to="3400" data-k>3.4K+</b><span id="dcLabel">Discord members</span><span class="go">Join the server</span>
 </a>
 
 <section class="card skills">
@@ -104,12 +152,12 @@ footer{max-width:1060px;margin:0 auto;padding:6px 18px 44px;color:var(--muted);f
 
 <section class="card skills">
   <span class="lbl">What Games I Play:</span>
-  <ul><li>🎮 Roblox</li><li>🔫 Counter Strike 2</li></ul>
+  <ul><li>🎮 Roblox</li><li>🔫 Counter-Strike 2</li></ul>
 </section>
 
 <a class="card cs2" href="https://steamcommunity.com/profiles/76561199072211028/" target="_blank" rel="noopener">
-  <img src="cs2-inventory.png" alt="My Peak Counter-strike 2 Inventory" loading="lazy">
-  <div><span class="lbl">CS2 inventory</span><p class="sub" style="margin:4px 0 8px"><b>534</b> items owned, with some very good skins.</p><span class="go">Open Steam profile</span></div>
+  <div class="shot"><img src="cs2-inventory.png" alt="My peak Counter-Strike 2 inventory" width="654" height="237" loading="lazy"></div>
+  <div class="info"><span class="lbl">CS2 inventory</span><p class="sub" style="margin:4px 0 8px"><b data-to="534">534</b> items owned, with some very good skins.</p><span class="go">Open Steam profile</span></div>
 </a>
 
 <a class="card stat" href="https://www.roblox.com/users/1172949315/profile" target="_blank" rel="noopener">
@@ -119,12 +167,13 @@ footer{max-width:1060px;margin:0 auto;padding:6px 18px 44px;color:var(--muted);f
   <span class="lbl">💻 GitHub</span><span class="sub">Code and projects</span><span class="go">LogicPlayerYT</span>
 </a>
 
-<a class="card" href="https://steamcommunity.com/profiles/76561199072211028/" target="_blank" rel="noopener">
+<a class="card steam" href="https://steamcommunity.com/profiles/76561199072211028/" target="_blank" rel="noopener">
   <span class="lbl">🎯 Steam</span><span class="sub">Add me as a friend</span><span class="go">RealLogicYT</span>
 </a>
 <section class="card dc">
   <span class="lbl">💬 Discord</span>
-  <span class="sub">LG|Logic server, 3.4K+ members</span>
+  <span class="sub" id="dcSub">LG|Logic server, 3.4K+ members</span>
+  <span class="presence" id="presence" hidden><span class="dot" id="pDot"></span><span id="pText"></span></span>
   <div class="row">
     <a class="btn" href="https://discord.gg/draMrWfcRV" target="_blank" rel="noopener">Join server</a>
     <button id="copy" type="button">Copy username</button>
@@ -143,52 +192,216 @@ footer{max-width:1060px;margin:0 auto;padding:6px 18px 44px;color:var(--muted);f
 
 </div>
 </main>
-
-<footer>
-  © 2026 Tah • LogicPlayerYT
-</footer>
+<footer>© <span id="year">2026</span> Tah • LogicPlayerYT • <a href="https://www.tah.lol/">tah.lol</a></footer>
+<div id="toast" role="status" aria-live="polite"></div>
 
 <script>
-// 1. Card mouse spotlight glow
-document.querySelectorAll('.card').forEach(card => {
-  card.addEventListener('pointermove', e => {
-    const r = card.getBoundingClientRect();
-    card.style.setProperty('--mx', `${e.clientX - r.left}px`);
-    card.style.setProperty('--my', `${e.clientY - r.top}px`);
+// ===== SETTINGS =====
+// Discord invite code (used to show the live member count)
+var INVITE = "draMrWfcRV";
+// Your Discord user ID for the live status ("Online, playing CS2").
+// To turn it on: join discord.gg/lanyard, then paste your user ID here.
+// Leave it empty ("") to hide the status line.
+var DISCORD_ID = "";
+// ====================
+
+var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+document.getElementById("year").textContent = new Date().getFullYear();
+
+function fmt(n, k){
+  if(!k) return String(n);
+  if(n >= 1000) return (n/1000).toFixed(1).replace(/\.0$/,"") + "K+";
+  return n + "+";
+}
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
+
+// Staggered card entrance + cursor glow
+document.querySelectorAll(".card").forEach(function(c,i){
+  c.style.setProperty("--i", i);
+  c.addEventListener("pointermove",function(e){
+    var r=c.getBoundingClientRect();
+    c.style.setProperty("--mx",(e.clientX-r.left)+"px");
+    c.style.setProperty("--my",(e.clientY-r.top)+"px");
   });
 });
 
-// 2. Copy Discord username button
-const copyBtn = document.getElementById('copy');
-const discordUser = 'logicplayeryt'; // Change to your exact Discord handle
-copyBtn.addEventListener('click', () => {
-  navigator.clipboard.writeText(discordUser);
-  const orig = copyBtn.textContent;
-  copyBtn.textContent = 'Copied!';
-  copyBtn.style.borderColor = 'var(--teal)';
-  setTimeout(() => {
-    copyBtn.textContent = orig;
-    copyBtn.style.borderColor = '';
-  }, 1800);
+// Toast
+var toastEl=document.getElementById("toast"),toastTimer;
+function toast(msg){
+  toastEl.textContent=msg;toastEl.classList.add("show");
+  clearTimeout(toastTimer);toastTimer=setTimeout(function(){toastEl.classList.remove("show");},1800);
+}
+
+// Copy Discord username
+function copyName(){
+  var name="logicplayeryt";
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(name).then(function(){toast("Copied: "+name);},function(){toast("Discord: "+name);});
+  }else{toast("Discord: "+name);}
+}
+document.getElementById("copy").addEventListener("click",copyName);
+
+// Avatar easter egg
+var pfp=document.getElementById("pfp");
+pfp.addEventListener("click",function(){
+  pfp.classList.remove("spin");void pfp.offsetWidth;pfp.classList.add("spin");
 });
 
-// 3. Terminal typing effect
-const out = document.getElementById('out');
-const lines = [
-  { cls: 'p', txt: '$ whoami\n' },
-  { txt: 'Tah (LogicPlayerYT / W_RealLogic)\n\n' },
-  { cls: 'p', txt: '$ cat about.txt\n' },
-  { txt: 'Developer, gamer & content creator.\nBuilding Roblox games at LogicGames and running the LG|Logic community.\n\n' },
-  { cls: 'p', txt: '$ status\n' },
-  { cls: 'ok', txt: '● Online & creating' }
-];
-
-let lineIdx = 0, charIdx = 0, span = null;
-function typeTerm() {
-  if (lineIdx >= lines.length) return;
-  const cur = lines[lineIdx];
-  if (!span) {
-    span = document.createElement('span');
-    if (cur.cls) span.className = cur.cls;
-    out.appendChild(span);
+// Count-up numbers when they scroll into view
+function countUp(el){
+  var to=+el.dataset.to,k=el.hasAttribute("data-k");
+  if(reduced||!to){el.textContent=fmt(to,k);return;}
+  var t0=null,dur=1100;
+  function step(t){
+    if(!t0)t0=t;
+    var p=Math.min((t-t0)/dur,1),e=1-Math.pow(1-p,3);
+    el.textContent=fmt(k?Math.round(to*e/100)*100:Math.round(to*e),k);
+    if(p<1)requestAnimationFrame(step);else el.textContent=fmt(to,k);
   }
+  requestAnimationFrame(step);
+}
+var counters=document.querySelectorAll("b[data-to]");
+if("IntersectionObserver" in window){
+  var io=new IntersectionObserver(function(es){
+    es.forEach(function(e){if(e.isIntersecting){countUp(e.target);io.unobserve(e.target);}});
+  },{threshold:.6});
+  counters.forEach(function(c){io.observe(c);});
+}
+
+// Live Discord member count (keeps the 3.4K+ text if it fails)
+fetch("https://discord.com/api/v10/invites/"+INVITE+"?with_counts=true")
+  .then(function(r){if(!r.ok)throw 0;return r.json();})
+  .then(function(d){
+    var total=d.approximate_member_count,online=d.approximate_presence_count;
+    if(!total)return;
+    var cEl=document.getElementById("dcCount");
+    cEl.dataset.to=total;cEl.textContent=fmt(total,true);
+    if(online)document.getElementById("dcLabel").textContent="members • "+online.toLocaleString()+" online";
+    document.getElementById("dcSub").textContent="LG|Logic server, "+total.toLocaleString()+" members"+(online?", "+online.toLocaleString()+" online now":"");
+  }).catch(function(){});
+
+// Live Discord status via Lanyard (only if DISCORD_ID is set)
+var presenceText="";
+function loadPresence(){
+  if(!DISCORD_ID)return;
+  fetch("https://api.lanyard.rest/v1/users/"+DISCORD_ID)
+    .then(function(r){return r.json();})
+    .then(function(j){
+      if(!j.success)return;
+      var d=j.data,s=d.discord_status||"offline";
+      var names={online:"Online",idle:"Away",dnd:"Do not disturb",offline:"Offline"};
+      var text=names[s]||s;
+      if(d.listening_to_spotify&&d.spotify)text+=" • Listening to "+d.spotify.song+" by "+d.spotify.artist;
+      else{
+        var act=(d.activities||[]).filter(function(a){return a.type===0;})[0];
+        if(act)text+=" • Playing "+act.name;
+      }
+      document.getElementById("pDot").className="dot "+s;
+      document.getElementById("pText").textContent=text;
+      document.getElementById("presence").hidden=false;
+      presenceText=text;
+    }).catch(function(){});
+}
+loadPresence();
+if(DISCORD_ID)setInterval(loadPresence,30000);
+
+// ===== Terminal =====
+var term=document.getElementById("term"),scr=document.getElementById("screen"),
+    out=document.getElementById("out"),cmd=document.getElementById("cmd"),cli=document.getElementById("cli");
+var LINKS={
+  youtube:["https://www.youtube.com/@LogicPlayerYT","YouTube","@LogicPlayerYT"],
+  discord:["https://discord.gg/draMrWfcRV","the LG|Logic Discord","LG|Logic server"],
+  roblox:["https://www.roblox.com/users/1172949315/profile","Roblox profile","W_RealLogic"],
+  github:["https://github.com/LogicPlayerYT","GitHub","LogicPlayerYT"],
+  steam:["https://steamcommunity.com/profiles/76561199072211028/","Steam profile","RealLogicYT"],
+  games:["https://www.roblox.com/communities/464804100/LogicGames#!/about","LogicGames","LogicGames community"]
+};
+var COMMANDS={
+  help:function(){return "<span class=ok>Commands:</span>\n"+
+    "  whoami      who I am\n  skills      what I work with\n  play        games I play\n"+
+    "  socials     all my links\n  youtube · discord · roblox · github · steam · games\n"+
+    "  status      my Discord status\n  copy        copy my Discord username\n"+
+    "  date        current date and time\n  echo        repeat text\n  clear       clear the screen";},
+  whoami:function(){return "LogicPlayerYT (aka tah). Developer, gamer and creator.";},
+  skills:function(){return "Linux, Python, Java, Luau";},
+  play:function(){return "Counter-Strike 2, Roblox";},
+  socials:function(){
+    return Object.keys(LINKS).map(function(k){
+      return "  "+(k+"         ").slice(0,10)+'<a href="'+LINKS[k][0]+'" target="_blank" rel="noopener">'+esc(LINKS[k][2])+"</a>";
+    }).join("\n");
+  },
+  status:function(){return presenceText?esc(presenceText):"<span class=dim>Status isn't connected right now.</span>";},
+  copy:function(){copyName();return "<span class=ok>Copied my Discord username.</span>";},
+  date:function(){return new Date().toLocaleString();},
+  echo:function(a){return esc(a);},
+  clear:function(){out.innerHTML="";return null;},
+  sudo:function(){return "<span class=err>Nice try. You are not tah. 👑</span>";},
+  exit:function(){return "There is no escape. Type <span class=p>help</span>.";},
+  ls:function(){return "pfp.png  cs2-inventory.png  secrets.txt";},
+  cat:function(a){return a.trim()==="secrets.txt"?"<span class=dim>Access denied. Maybe join the Discord first.</span>":"cat: "+esc(a||"missing file name");}
+};
+function say(html){out.innerHTML+=html+"\n";scr.scrollTop=scr.scrollHeight;}
+function run(raw){
+  var line=raw.trim();
+  say("<span class=p>$</span> "+esc(line));
+  if(!line)return;
+  var name=line.split(/\s+/)[0].toLowerCase(),arg=line.slice(name.length).trim();
+  if(LINKS[name]){
+    window.open(LINKS[name][0],"_blank","noopener");
+    say("<span class=ok>Opening "+LINKS[name][1]+"…</span>\n");return;
+  }
+  var fn=COMMANDS[name];
+  if(!fn){say("<span class=err>command not found: "+esc(name)+"</span>. Type <span class=p>help</span>.\n");return;}
+  var res=fn(arg);
+  if(res!==null)say(res+"\n");
+}
+var hist=[],hi=0;
+cli.addEventListener("submit",function(e){
+  e.preventDefault();
+  var v=cmd.value;cmd.value="";
+  if(v.trim()){hist.push(v);}
+  hi=hist.length;
+  run(v);
+});
+cmd.addEventListener("keydown",function(e){
+  if(e.key==="ArrowUp"&&hi>0){hi--;cmd.value=hist[hi];e.preventDefault();}
+  else if(e.key==="ArrowDown"){hi=Math.min(hi+1,hist.length);cmd.value=hist[hi]||"";e.preventDefault();}
+});
+term.addEventListener("click",function(e){
+  if(term.classList.contains("ready")&&!e.target.closest("a")&&!window.getSelection().toString())cmd.focus({preventScroll:true});
+});
+document.addEventListener("keydown",function(e){
+  if(e.key==="/"&&document.activeElement!==cmd&&term.classList.contains("ready")){
+    e.preventDefault();cmd.focus();
+  }
+});
+
+// Intro: types the lines one after another, then unlocks the prompt
+var lines=[
+ ["whoami","LogicPlayerYT (aka tah)"],
+ ["skills","Python, Java, Luau"],
+ ["play","Counter-Strike 2, Roblox"],
+ ["status","<span class=ok>Developer • Gamer • Creator</span>"]
+];
+var HINT="<span class=dim>Type <span class=p>help</span> to see what you can do.</span>\n";
+function unlock(){term.classList.remove("typing");term.classList.add("ready");scr.scrollTop=scr.scrollHeight;}
+if(reduced){
+  out.innerHTML=lines.map(function(l){return "<span class=p>$</span> "+l[0]+"\n"+l[1];}).join("\n\n")+"\n\n"+HINT;
+  unlock();
+}else{
+  var typed="",li=0;
+  (function next(){
+    if(li>=lines.length){out.innerHTML=typed+HINT;unlock();return;}
+    var text=lines[li][0],res=lines[li][1],n=0;
+    (function typeCmd(){
+      n++;
+      out.innerHTML=typed+"<span class=p>$</span> "+text.slice(0,n);
+      if(n<text.length){setTimeout(typeCmd,70);}
+      else{typed+="<span class=p>$</span> "+text+"\n";out.innerHTML=typed;
+        setTimeout(function(){typed+=res+"\n\n";out.innerHTML=typed;li++;setTimeout(next,450);},300);}
+    })();
+  })();
+}
+</script>
+</body>
+</html>
