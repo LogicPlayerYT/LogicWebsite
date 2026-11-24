@@ -28,7 +28,12 @@ background:radial-gradient(260px circle at var(--mx,50%) var(--my,50%),rgba(242,
 .card:hover::before{opacity:1}
 a.card:focus-visible,button:focus-visible,.btn:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
 .hero{grid-column:span 2;grid-row:span 2;align-items:flex-start;gap:18px;justify-content:flex-end;min-height:340px}
-.pfp{width:132px;height:132px;border-radius:50%;object-fit:cover;border:2px solid var(--gold);box-shadow:0 0 0 6px rgba(242,193,78,.1)}
+
+/* Circular frame keeping your exact gold border & glow */
+.pfp-wrap{width:132px;height:132px;border-radius:50%;overflow:hidden;flex-shrink:0;border:2px solid var(--gold);box-shadow:0 0 0 6px rgba(242,193,78,.1)}
+/* Zooms in on the Roblox avatar's face */
+.pfp{width:100%;height:100%;object-fit:cover;transform:scale(2.2);transform-origin:50% 18%}
+
 h1{margin:0;font-size:clamp(2.6rem,7vw,4rem);line-height:1;letter-spacing:-.02em}
 .handle{margin:6px 0 0;color:var(--muted);font-family:var(--mono);font-size:.9rem}
 .roles{margin:10px 0 0}
@@ -70,7 +75,9 @@ footer{max-width:1060px;margin:0 auto;padding:6px 18px 44px;color:var(--muted);f
 <div class="bento">
 
 <section class="card hero">
-  <img class="pfp" src="pfp.png" alt="Tah profile picture">
+  <div class="pfp-wrap">
+    <img class="pfp" src="pfp.png" alt="Tah profile picture">
+  </div>
   <div>
     <h1>Tah</h1>
     <p class="handle">LogicPlayerYT • W_RealLogic</p>
@@ -136,51 +143,52 @@ footer{max-width:1060px;margin:0 auto;padding:6px 18px 44px;color:var(--muted);f
 
 </div>
 </main>
-<footer>tah.lol</footer>
+
+<footer>
+  © 2026 Tah • LogicPlayerYT
+</footer>
 
 <script>
-// Cursor glow on every card
-document.querySelectorAll(".card").forEach(function(c){
-  c.addEventListener("pointermove",function(e){
-    var r=c.getBoundingClientRect();
-    c.style.setProperty("--mx",(e.clientX-r.left)+"px");
-    c.style.setProperty("--my",(e.clientY-r.top)+"px");
+// 1. Card mouse spotlight glow
+document.querySelectorAll('.card').forEach(card => {
+  card.addEventListener('pointermove', e => {
+    const r = card.getBoundingClientRect();
+    card.style.setProperty('--mx', `${e.clientX - r.left}px`);
+    card.style.setProperty('--my', `${e.clientY - r.top}px`);
   });
 });
 
-// Copy Discord username
-var btn=document.getElementById("copy");
-btn.addEventListener("click",function(){
-  function done(){btn.textContent="Copied!";setTimeout(function(){btn.textContent="Copy username";},1500);}
-  try{navigator.clipboard.writeText("logicplayeryt").then(done,function(){btn.textContent="logicplayeryt";});}
-  catch(e){btn.textContent="logicplayeryt";}
+// 2. Copy Discord username button
+const copyBtn = document.getElementById('copy');
+const discordUser = 'logicplayeryt'; // Change to your exact Discord handle
+copyBtn.addEventListener('click', () => {
+  navigator.clipboard.writeText(discordUser);
+  const orig = copyBtn.textContent;
+  copyBtn.textContent = 'Copied!';
+  copyBtn.style.borderColor = 'var(--teal)';
+  setTimeout(() => {
+    copyBtn.textContent = orig;
+    copyBtn.style.borderColor = '';
+  }, 1800);
 });
 
-// Terminal: types the lines one after another
-var lines=[
- ["<span class=p>$</span> whoami:","LogicPlayerYT (aka tah)"],
- ["<span class=p>$</span> languages i know:","Python, Java, Luau"],
- ["<span class=p>$</span> games i play:","Counter-Strike 2, Roblox"],
- ["<span class=p>$</span> status","<span class=ok>Developer • Gamer • Creator</span>"]
+// 3. Terminal typing effect
+const out = document.getElementById('out');
+const lines = [
+  { cls: 'p', txt: '$ whoami\n' },
+  { txt: 'Tah (LogicPlayerYT / W_RealLogic)\n\n' },
+  { cls: 'p', txt: '$ cat about.txt\n' },
+  { txt: 'Developer, gamer & content creator.\nBuilding Roblox games at LogicGames and running the LG|Logic community.\n\n' },
+  { cls: 'p', txt: '$ status\n' },
+  { cls: 'ok', txt: '● Online & creating' }
 ];
-var out=document.getElementById("out");
-function strip(h){var d=document.createElement("div");d.innerHTML=h;return d.textContent;}
-if(window.matchMedia("(prefers-reduced-motion: reduce)").matches){
-  out.innerHTML=lines.map(function(l){return l[0]+"\n"+l[1];}).join("\n\n");
-}else{
-  var done="",li=0;
-  (function next(){
-    if(li>=lines.length)return;
-    var cmd=lines[li][0],res=lines[li][1],plain=strip(cmd),n=0;
-    (function typeCmd(){
-      n++;
-      out.innerHTML=done+"<span class=p>$</span> "+plain.slice(2,n+2);
-      if(n<plain.length-2){setTimeout(typeCmd,60);}
-      else{done+=cmd+"\n";out.innerHTML=done;
-        setTimeout(function(){done+=res+"\n\n";out.innerHTML=done;li++;setTimeout(next,600);},350);}
-    })();
-  })();
-}
-</script>
-</body>
-</html>
+
+let lineIdx = 0, charIdx = 0, span = null;
+function typeTerm() {
+  if (lineIdx >= lines.length) return;
+  const cur = lines[lineIdx];
+  if (!span) {
+    span = document.createElement('span');
+    if (cur.cls) span.className = cur.cls;
+    out.appendChild(span);
+  }
