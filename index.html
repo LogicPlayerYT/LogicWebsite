@@ -344,8 +344,8 @@ footer{max-width:1060px;margin:0 auto;padding:30px 18px 48px;color:var(--muted);
   <span class="lbl">🧭 My journey</span>
   <ol class="tl">
     <li><time>2019</time><span>Joined Roblox</span></li>
-    <li><time>2021</time><span>Started Making Games On Roblox</span></li>
     <li><time>2020</time><span>Started Youtube Channel</span></li>
+    <li><time>2021</time><span>Started Making Games On Roblox</span></li>
     <li><time>Feb 8, 2023</time><span>Hit 500 Subscriber's ✅</span></li>
     <li><time>Dec 26, 2023</time><span>Hit 1,000 Subscriber's 😊</span></li>
     <li><time>Oct 29, 2024</time><span>Hit 2,000 Subscriber's 😁</span></li>
@@ -610,12 +610,17 @@ if("IntersectionObserver" in window){
   document.querySelectorAll("b[data-to]").forEach(function(c){io.observe(c);});
 }
 
-// View counter: every page load (including refresh) adds 1
+// View counter: counts 1 view per visitor every 2 hours (refreshing doesn't add views)
 (function(){
+  var COOLDOWN=2*60*60*1000; // 2 hours. Change the 2 to adjust.
   var el=document.getElementById("viewCount");
-  var last=null;
-  try{last=localStorage.getItem("tah_views_last");}catch(e){}
+  var last=null,lastHit=0;
+  try{
+    last=localStorage.getItem("tah_views_last");
+    lastHit=+localStorage.getItem("tah_views_hit")||0;
+  }catch(e){}
   el.textContent=last?Number(last).toLocaleString():"…";
+  var counted=Date.now()-lastHit<COOLDOWN; // already counted in the last 2 hours?
   function show(to){
     var from=last?Number(last):0;
     if(reduced||to<=from){el.textContent=to.toLocaleString();return;}
@@ -625,11 +630,17 @@ if("IntersectionObserver" in window){
       if(p<1)requestAnimationFrame(step);})(performance.now());
   }
   function hit(tries){
-    fetch("https://abacus.jasoncameron.dev/hit/"+VIEW_NS+"/"+VIEW_KEY,{cache:"no-store"})
+    // "get" only reads the number; "hit" adds 1 and returns it
+    var mode=counted?"get":"hit";
+    fetch("https://abacus.jasoncameron.dev/"+mode+"/"+VIEW_NS+"/"+VIEW_KEY,{cache:"no-store"})
       .then(function(r){if(!r.ok)throw 0;return r.json();})
       .then(function(d){
         if(typeof d.value!=="number")throw 0;
-        try{localStorage.setItem("tah_views_last",d.value);}catch(e){}
+        try{
+          localStorage.setItem("tah_views_last",d.value);
+          if(!counted)localStorage.setItem("tah_views_hit",String(Date.now()));
+        }catch(e){}
+        counted=true;
         show(d.value);
       }).catch(function(){
         if(tries>0)setTimeout(function(){hit(tries-1);},2000);
