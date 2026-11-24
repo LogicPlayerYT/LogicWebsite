@@ -407,7 +407,7 @@ function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {"&":"&am
 Object.keys(THUMBS).forEach(function(id){
   if(!THUMBS[id])return;
   var cover=document.querySelector("#"+id+" .cover");if(!cover)return;
-  var img=new Image();img.alt="";img.loading="lazy";
+  var img=new Image();img.alt="";
   img.onload=function(){cover.insertBefore(img,cover.firstChild);cover.querySelector(".emo").hidden=true;};
   img.src=THUMBS[id];
 });
