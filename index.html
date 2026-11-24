@@ -193,6 +193,30 @@ display:grid;place-items:center;transition:transform .2s;box-shadow:0 10px 30px 
 padding:9px 14px;text-decoration:none;cursor:pointer;transition:border-color .2s}
 .btn:hover,button:hover{border-color:var(--gold)}
 
+/* Comments */
+.cbox{grid-column:1/-1;justify-content:flex-start;gap:16px}
+.crow{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.cform{display:flex;flex-direction:column;gap:10px}
+.cform input,.cform textarea{width:100%;font:inherit;font-size:.95rem;color:var(--text);background:#0e0e11;border:1px solid var(--line2);
+border-radius:10px;padding:10px 12px;outline:0;transition:border-color .2s;resize:vertical}
+.cform input:focus,.cform textarea:focus{border-color:var(--gold)}
+.cform .crow input{flex:1;min-width:0;width:auto}
+.cme{font-size:.88rem;color:var(--muted)}
+.cme b{color:var(--text)}
+button.link{background:none;border:0;padding:0;color:var(--gold);font:inherit;font-size:.88rem;cursor:pointer;text-decoration:underline}
+#cOpen,#cPost,.cform button[type=submit]{background:var(--gold);color:#16130a;border-color:var(--gold);font-weight:600}
+#cOpen:hover,#cPost:hover,.cform button[type=submit]:hover{filter:brightness(1.08)}
+#cPost:disabled{opacity:.6;cursor:wait}
+.clist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.clist li{display:flex;gap:12px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:rgba(10,10,12,.45)}
+.clist li.fresh{animation:rise .4s ease both;border-color:rgba(242,193,78,.35)}
+.cav{width:34px;height:34px;flex:none;border-radius:50%;display:grid;place-items:center;font-weight:700;color:#111;text-transform:uppercase}
+.cbody{min-width:0;flex:1}
+.chead{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.chead b{font-size:.95rem}
+.chead time{font-family:var(--mono);font-size:.72rem;color:var(--muted)}
+.ctext{margin:2px 0 0;font-size:.93rem;color:#d6d6dc;white-space:pre-wrap;word-break:break-word}
+
 #toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);opacity:0;pointer-events:none;
 background:#1b1b20;border:1px solid var(--gold);color:var(--text);font-family:var(--mono);font-size:.85rem;
 padding:10px 16px;border-radius:10px;transition:opacity .25s,transform .25s;z-index:30}
@@ -376,6 +400,26 @@ footer{max-width:1060px;margin:0 auto;padding:30px 18px 48px;color:var(--muted);
   </div>
 </section>
 
+<!-- ===== COMMENTS ===== -->
+<h2 class="sec" id="comments">💬 Comments <small id="cCount"></small></h2>
+<section class="card cbox" id="cbox">
+  <div class="crow" id="cStart">
+    <span class="sub">Say hi, leave a message, or roast my skins xd</span>
+    <button id="cOpen" type="button">✍️ Leave a comment</button>
+  </div>
+  <form class="cform" id="cName" hidden>
+    <label class="lbl" for="cNameIn">What's your name?</label>
+    <div class="crow"><input id="cNameIn" maxlength="20" autocomplete="nickname" placeholder="Your name" required><button type="submit">Next →</button></div>
+  </form>
+  <form class="cform" id="cText" hidden>
+    <div class="cme">Commenting as <b id="cMe"></b> · <button type="button" class="link" id="cChange">change name</button></div>
+    <textarea id="cTextIn" maxlength="300" rows="3" placeholder="Write your comment..." required></textarea>
+    <div class="crow"><span class="dim" id="cLeft" style="font-family:var(--mono);font-size:.75rem">300 left</span><button type="submit" id="cPost">Post</button></div>
+  </form>
+  <ul class="clist" id="cList"></ul>
+  <p class="sub" id="cEmpty">Loading comments...</p>
+</section>
+
 </div>
 </main>
 <footer>© <span id="year">2026</span> Tah • LogicPlayerYT • made with way too much coffee xd</footer>
@@ -384,6 +428,9 @@ footer{max-width:1060px;margin:0 auto;padding:30px 18px 48px;color:var(--muted);
 
 <script>
 // ===== SETTINGS =====
+// Comments (free Firebase Firestore). Paste your project ID and Web API key here.
+// Leave projectId empty ("") to hide the comments section.
+var COMMENTS = { projectId: "tah-site-d4243", apiKey: "AIzaSyA-20x-GYfqKUN9J1l-7ye94VZKKOhHfjo" };
 // Your Discord user ID for the live status. Works only while you're in the Lanyard server (discord.gg/lanyard).
 var DISCORD_ID = "724827225182044161";
 var DISCORD_NAME = "logicplayeryt";
@@ -575,6 +622,95 @@ function loadPresence(){
 loadPresence();
 if(DISCORD_ID)setInterval(loadPresence,30000);
 
+// ===== Comments =====
+(function(){
+  var sec=document.getElementById("comments"),box=document.getElementById("cbox");
+  if(!COMMENTS.projectId){sec.hidden=true;box.hidden=true;return;}
+  var base="https://firestore.googleapis.com/v1/projects/"+encodeURIComponent(COMMENTS.projectId)+"/databases/(default)/documents/comments";
+  var key=COMMENTS.apiKey?"key="+encodeURIComponent(COMMENTS.apiKey):"";
+  var start=document.getElementById("cStart"),fName=document.getElementById("cName"),fText=document.getElementById("cText"),
+      nameIn=document.getElementById("cNameIn"),textIn=document.getElementById("cTextIn"),me=document.getElementById("cMe"),
+      left=document.getElementById("cLeft"),post=document.getElementById("cPost"),list=document.getElementById("cList"),
+      empty=document.getElementById("cEmpty"),count=document.getElementById("cCount");
+  var name="",total=0;
+  try{name=localStorage.getItem("tah_cname")||"";}catch(e){}
+  var COLORS=["#f2c14e","#3fd0c9","#ff8a65","#b388ff","#81c784","#4fc3f7","#f48fb1"];
+  function color(n){var h=0;for(var i=0;i<n.length;i++)h=(h*31+n.charCodeAt(i))>>>0;return COLORS[h%COLORS.length];}
+  function ago(t){
+    var s=(Date.now()-t)/1000;
+    if(s<60)return "just now";var m=s/60;if(m<60)return Math.floor(m)+"m ago";
+    var h=m/60;if(h<24)return Math.floor(h)+"h ago";var d=h/24;if(d<30)return Math.floor(d)+"d ago";
+    return new Date(t).toLocaleDateString();
+  }
+  function item(n,txt,t,fresh){
+    var li=document.createElement("li");if(fresh)li.className="fresh";
+    var av=document.createElement("span");av.className="cav";av.textContent=n.charAt(0)||"?";av.style.background=color(n);
+    var body=document.createElement("div");body.className="cbody";
+    var head=document.createElement("div");head.className="chead";
+    var b=document.createElement("b");b.textContent=n;
+    var tm=document.createElement("time");tm.textContent=ago(t);tm.dateTime=new Date(t).toISOString();
+    head.appendChild(b);head.appendChild(tm);
+    var p=document.createElement("p");p.className="ctext";p.textContent=txt;
+    body.appendChild(head);body.appendChild(p);li.appendChild(av);li.appendChild(body);
+    return li;
+  }
+  function setCount(){count.textContent=total?total+(total===1?" comment":" comments"):"";empty.hidden=total>0;}
+  function load(){
+    fetch(base+"?pageSize=100&orderBy=time%20desc"+(key?"&"+key:""))
+      .then(function(r){if(!r.ok)throw 0;return r.json();})
+      .then(function(d){
+        list.innerHTML="";
+        (d.documents||[]).forEach(function(doc){
+          var f=doc.fields||{};
+          var n=f.name&&f.name.stringValue,txt=f.text&&f.text.stringValue,t=f.time&&f.time.timestampValue;
+          if(n&&txt)list.appendChild(item(n,txt,Date.parse(t||doc.createTime),false));
+        });
+        total=list.children.length;
+        empty.textContent="No comments yet. Be the first xd";setCount();
+      })
+      .catch(function(){empty.textContent="Couldn't load comments right now.";empty.hidden=false;});
+  }
+  function showText(){
+    me.textContent=name;start.hidden=true;fName.hidden=true;fText.hidden=false;textIn.focus();
+  }
+  function showName(){
+    nameIn.value=name;start.hidden=true;fText.hidden=true;fName.hidden=false;nameIn.focus();
+  }
+  document.getElementById("cOpen").addEventListener("click",function(){name?showText():showName();});
+  document.getElementById("cChange").addEventListener("click",showName);
+  fName.addEventListener("submit",function(e){
+    e.preventDefault();
+    var v=nameIn.value.replace(/\s+/g," ").trim().slice(0,20);
+    if(!v)return;
+    name=v;try{localStorage.setItem("tah_cname",v);}catch(err){}
+    showText();
+  });
+  textIn.addEventListener("input",function(){left.textContent=(300-textIn.value.length)+" left";});
+  fText.addEventListener("submit",function(e){
+    e.preventDefault();
+    var txt=textIn.value.trim().slice(0,300);
+    if(!txt||!name)return;
+    var last=0;try{last=+localStorage.getItem("tah_clast")||0;}catch(err){}
+    var wait=Math.ceil((30000-(Date.now()-last))/1000);
+    if(wait>0){toast("Slow down xd Wait "+wait+"s");return;}
+    post.disabled=true;post.textContent="Posting...";
+    var now=new Date();
+    fetch(base+(key?"?"+key:""),{method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({fields:{name:{stringValue:name},text:{stringValue:txt},time:{timestampValue:now.toISOString()}}})})
+      .then(function(r){if(!r.ok)throw 0;return r.json();})
+      .then(function(){
+        try{localStorage.setItem("tah_clast",String(Date.now()));}catch(err){}
+        list.insertBefore(item(name,txt,now.getTime(),true),list.firstChild);
+        total++;setCount();
+        textIn.value="";left.textContent="300 left";
+        toast("Comment posted!");
+      })
+      .catch(function(){toast("Couldn't post. Try again.");})
+      .then(function(){post.disabled=false;post.textContent="Post";});
+  });
+  load();
+})();
+
 // ===== Terminal =====
 var term=document.getElementById("term"),scr=document.getElementById("screen"),
     out=document.getElementById("out"),cmd=document.getElementById("cmd"),cli=document.getElementById("cli");
@@ -593,7 +729,7 @@ var COMMANDS={
     "  whoami      Who I am\n  bio         A bit about me\n  role        What I do\n"+
     "  projects    My Roblox games\n  journey     My milestones\n  skills      What I work with\n"+
     "  games       Games I play\n  socials     All my links\n  status      My Discord status\n"+
-    "  discord     Copy my Discord username\n  date        Current date and time\n  echo        Repeat your text\n  clear       Clear the screen\n\n"+
+    "  discord     Copy my Discord username\n  comment     Go to the comments\n  date        Current date and time\n  echo        Repeat your text\n  clear       Clear the screen\n\n"+
     "<span class=ok>Open a link:</span>\n  youtube · roblox · github · steam\n  logicgames · parkour · video";},
   whoami:function(){return "LogicPlayerYT (aka Tah)";},
   bio:function(){return "hey, i'm tah xd. roblox dev, youtuber and cs2 player.";},
@@ -613,6 +749,7 @@ var COMMANDS={
   },
   status:function(){return presenceText?esc(presenceText):"<span class=dim>Can't load my Discord status right now.</span>";},
   discord:function(){copyName();return "<span class=ok>Copied my Discord username: "+DISCORD_NAME+"</span>";},
+  comment:function(){var c=document.getElementById("comments");if(c.hidden)return "<span class=dim>Comments aren't set up yet.</span>";c.scrollIntoView({behavior:reduced?"auto":"smooth"});return "<span class=ok>Taking you to the comments…</span>";},
   date:function(){return new Date().toLocaleString();},
   echo:function(a){return esc(a);},
   clear:function(){out.innerHTML="";return null;},
