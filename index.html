@@ -26,6 +26,13 @@ html{color-scheme:dark}
 body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.5;
 background-image:radial-gradient(60rem 30rem at 50% -10%,rgba(242,193,78,.07),transparent 70%)}
 ::selection{background:var(--gold);color:#111}
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+background-image:radial-gradient(rgba(255,255,255,.07) 1px,transparent 1.5px);background-size:22px 22px;
+-webkit-mask-image:radial-gradient(70rem 45rem at 50% 0%,#000 30%,transparent 80%);mask-image:radial-gradient(70rem 45rem at 50% 0%,#000 30%,transparent 80%)}
+body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:0;transition:opacity .4s;
+background:radial-gradient(520px circle at var(--gx,50%) var(--gy,30%),rgba(242,193,78,.06),transparent 70%)}
+body.lit::after{opacity:1}
+body{isolation:isolate}
 main{max-width:1060px;margin:0 auto;padding:40px 18px 28px}
 .bento{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
 .card{position:relative;overflow:hidden;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px;
@@ -122,7 +129,7 @@ footer a{color:inherit}
 <div class="bento">
 
 <section class="card hero">
-  <div class="pfp" id="pfp" title="Click me"><img src="pfp.png" alt="Tah's Roblox avatar" width="132" height="132"></div>
+  <div class="pfp" id="pfp" title="Click me!"><img src="pfp.png" alt="Tah's Roblox avatar" width="132" height="132"></div>
   <div>
     <h1>Tah</h1>
     <p class="handle">LogicPlayerYT • W_RealLogic</p>
@@ -131,40 +138,40 @@ footer a{color:inherit}
 </section>
 
 <section class="card term typing" id="term" aria-label="Interactive terminal">
-  <div class="bar"><i></i><i></i><i></i><span>tah@logic: ~</span><kbd title="Press / to focus">/</kbd></div>
+  <div class="bar"><i></i><i></i><i></i><span>tah@logic: ~</span><kbd title="Press / to type here">/</kbd></div>
   <div class="screen" id="screen">
     <pre id="out" aria-live="polite"></pre>
-    <form id="cli" autocomplete="off"><span class="p">$</span><input id="cmd" spellcheck="false" aria-label="Type a command, for example help"></form>
+    <form id="cli" autocomplete="off"><span class="p">$</span><input id="cmd" spellcheck="false" aria-label="Type a command, like help"></form>
   </div>
 </section>
 
 <a class="card stat" href="https://www.youtube.com/@LogicPlayerYT" target="_blank" rel="noopener">
-  <span>📺 YouTube</span><b data-to="2500" data-k>2.5K+</b><span>subscribers</span><span class="go">@LogicPlayerYT</span>
+  <span>📺 YouTube</span><b data-to="2500" data-k>2.5K+</b><span>Subscribers</span><span class="go">@LogicPlayerYT</span>
 </a>
 <a class="card stat" href="https://discord.gg/draMrWfcRV" target="_blank" rel="noopener">
-  <span>👥 Owner of LG|Logic</span><b id="dcCount" data-to="3400" data-k>3.4K+</b><span id="dcLabel">Discord members</span><span class="go">Join the server</span>
+  <span>👥 LG|Logic Discord</span><b id="dcCount" data-to="3400" data-k>3.4K+</b><span id="dcLabel">Members</span><span class="go">Join the server</span>
 </a>
 
 <section class="card skills">
-  <span class="lbl">What I Work With:</span>
+  <span class="lbl">🛠️ What I work with</span>
   <ul><li>🐧 Linux</li><li>🐍 Python</li><li>☕ Java</li><li>🌙 Luau</li></ul>
 </section>
 
 <section class="card skills">
-  <span class="lbl">What Games I Play:</span>
+  <span class="lbl">🕹️ Games I play</span>
   <ul><li>🎮 Roblox</li><li>🔫 Counter-Strike 2</li></ul>
 </section>
 
 <a class="card cs2" href="https://steamcommunity.com/profiles/76561199072211028/" target="_blank" rel="noopener">
-  <div class="shot"><img src="cs2-inventory.png" alt="My peak Counter-Strike 2 inventory" width="654" height="237" loading="lazy"></div>
-  <div class="info"><span class="lbl">CS2 inventory</span><p class="sub" style="margin:4px 0 8px"><b data-to="534">534</b> items owned, with some very good skins.</p><span class="go">Open Steam profile</span></div>
+  <div class="shot"><img src="cs2-inventory.png" alt="Tah's Counter-Strike 2 inventory" width="654" height="237" loading="lazy"></div>
+  <div class="info"><span class="lbl">🔫 CS2 inventory</span><p class="sub" style="margin:4px 0 8px"><b data-to="534">534</b> items, including some of my best skins.</p><span class="go">Open Steam profile</span></div>
 </a>
 
 <a class="card stat" href="https://www.roblox.com/users/1172949315/profile" target="_blank" rel="noopener">
-  <span>🎮 Roblox</span><b>2019</b><span>playing since</span><span class="go">W_RealLogic</span>
+  <span>🎮 Roblox</span><b>2019</b><span>Playing since</span><span class="go">W_RealLogic</span>
 </a>
 <a class="card" href="https://github.com/LogicPlayerYT" target="_blank" rel="noopener">
-  <span class="lbl">💻 GitHub</span><span class="sub">Code and projects</span><span class="go">LogicPlayerYT</span>
+  <span class="lbl">💻 GitHub</span><span class="sub">My code and projects</span><span class="go">LogicPlayerYT</span>
 </a>
 
 <a class="card steam" href="https://steamcommunity.com/profiles/76561199072211028/" target="_blank" rel="noopener">
@@ -172,7 +179,7 @@ footer a{color:inherit}
 </a>
 <section class="card dc">
   <span class="lbl">💬 Discord</span>
-  <span class="sub" id="dcSub">LG|Logic server, 3.4K+ members</span>
+  <span class="sub" id="dcSub">I own the LG|Logic server. Come say hi.</span>
   <span class="presence" id="presence" hidden><span class="dot" id="pDot"></span><span id="pText"></span></span>
   <div class="row">
     <a class="btn" href="https://discord.gg/draMrWfcRV" target="_blank" rel="noopener">Join server</a>
@@ -182,7 +189,7 @@ footer a{color:inherit}
 
 <section class="card groups">
   <span class="lbl">🏷️ Roblox communities</span>
-  <span class="sub">LogicGames is where my games live.</span>
+  <span class="sub">My games are published under LogicGames.</span>
   <div class="row">
     <a class="btn" href="https://www.roblox.com/communities/32066272/LG-Logic#!/about" target="_blank" rel="noopener">LG|Logic</a>
     <a class="btn" href="https://www.roblox.com/communities/464804100/LogicGames#!/about" target="_blank" rel="noopener">LogicGames</a>
@@ -199,7 +206,7 @@ footer a{color:inherit}
 // ===== SETTINGS =====
 // Discord invite code (used to show the live member count)
 var INVITE = "draMrWfcRV";
-// Your Discord user ID for the live status ("Online, playing CS2").
+// Your Discord user ID for the live status ("Online • Playing Counter-Strike 2").
 // To turn it on: join discord.gg/lanyard, then paste your user ID here.
 // Leave it empty ("") to hide the status line.
 var DISCORD_ID = "";
@@ -224,6 +231,16 @@ document.querySelectorAll(".card").forEach(function(c,i){
     c.style.setProperty("--my",(e.clientY-r.top)+"px");
   });
 });
+
+// Background spotlight that follows the mouse (desktop only)
+if(window.matchMedia("(hover: hover)").matches&&!reduced){
+  var root=document.body;
+  window.addEventListener("pointermove",function(e){
+    root.style.setProperty("--gx",e.clientX+"px");root.style.setProperty("--gy",e.clientY+"px");
+    root.classList.add("lit");
+  },{passive:true});
+  document.addEventListener("pointerleave",function(){root.classList.remove("lit");});
+}
 
 // Toast
 var toastEl=document.getElementById("toast"),toastTimer;
@@ -276,8 +293,8 @@ fetch("https://discord.com/api/v10/invites/"+INVITE+"?with_counts=true")
     if(!total)return;
     var cEl=document.getElementById("dcCount");
     cEl.dataset.to=total;cEl.textContent=fmt(total,true);
-    if(online)document.getElementById("dcLabel").textContent="members • "+online.toLocaleString()+" online";
-    document.getElementById("dcSub").textContent="LG|Logic server, "+total.toLocaleString()+" members"+(online?", "+online.toLocaleString()+" online now":"");
+    if(online)document.getElementById("dcLabel").textContent="Members • "+online.toLocaleString()+" online";
+    document.getElementById("dcSub").textContent="I own the LG|Logic server. "+(online?online.toLocaleString()+" people are online now.":"Come say hi.");
   }).catch(function(){});
 
 // Live Discord status via Lanyard (only if DISCORD_ID is set)
@@ -309,36 +326,37 @@ if(DISCORD_ID)setInterval(loadPresence,30000);
 var term=document.getElementById("term"),scr=document.getElementById("screen"),
     out=document.getElementById("out"),cmd=document.getElementById("cmd"),cli=document.getElementById("cli");
 var LINKS={
-  youtube:["https://www.youtube.com/@LogicPlayerYT","YouTube","@LogicPlayerYT"],
+  youtube:["https://www.youtube.com/@LogicPlayerYT","my YouTube channel","@LogicPlayerYT"],
   discord:["https://discord.gg/draMrWfcRV","the LG|Logic Discord","LG|Logic server"],
-  roblox:["https://www.roblox.com/users/1172949315/profile","Roblox profile","W_RealLogic"],
-  github:["https://github.com/LogicPlayerYT","GitHub","LogicPlayerYT"],
-  steam:["https://steamcommunity.com/profiles/76561199072211028/","Steam profile","RealLogicYT"],
-  games:["https://www.roblox.com/communities/464804100/LogicGames#!/about","LogicGames","LogicGames community"]
+  roblox:["https://www.roblox.com/users/1172949315/profile","my Roblox profile","W_RealLogic"],
+  github:["https://github.com/LogicPlayerYT","my GitHub","LogicPlayerYT"],
+  steam:["https://steamcommunity.com/profiles/76561199072211028/","my Steam profile","RealLogicYT"],
+  logicgames:["https://www.roblox.com/communities/464804100/LogicGames#!/about","the LogicGames community","LogicGames"]
 };
 var COMMANDS={
   help:function(){return "<span class=ok>Commands:</span>\n"+
-    "  whoami      who I am\n  skills      what I work with\n  play        games I play\n"+
-    "  socials     all my links\n  youtube · discord · roblox · github · steam · games\n"+
-    "  status      my Discord status\n  copy        copy my Discord username\n"+
-    "  date        current date and time\n  echo        repeat text\n  clear       clear the screen";},
-  whoami:function(){return "LogicPlayerYT (aka tah). Developer, gamer and creator.";},
+    "  whoami      Who I am\n  role        What I do\n  skills      What I work with\n  games       Games I play\n"+
+    "  socials     All my links\n  status      My Discord status\n  copy        Copy my Discord username\n"+
+    "  date        Current date and time\n  echo        Repeat your text\n  clear       Clear the screen\n\n"+
+    "<span class=ok>Open a link:</span>\n  youtube · discord · roblox\n  github · steam · logicgames";},
+  whoami:function(){return "LogicPlayerYT (aka Tah)";},
+  role:function(){return "<span class=ok>Developer • Gamer • Creator</span>";},
   skills:function(){return "Linux, Python, Java, Luau";},
-  play:function(){return "Counter-Strike 2, Roblox";},
+  games:function(){return "Roblox, Counter-Strike 2";},
   socials:function(){
     return Object.keys(LINKS).map(function(k){
-      return "  "+(k+"         ").slice(0,10)+'<a href="'+LINKS[k][0]+'" target="_blank" rel="noopener">'+esc(LINKS[k][2])+"</a>";
+      return "  "+(k+"            ").slice(0,12)+'<a href="'+LINKS[k][0]+'" target="_blank" rel="noopener">'+esc(LINKS[k][2])+"</a>";
     }).join("\n");
   },
-  status:function(){return presenceText?esc(presenceText):"<span class=dim>Status isn't connected right now.</span>";},
-  copy:function(){copyName();return "<span class=ok>Copied my Discord username.</span>";},
+  status:function(){return presenceText?esc(presenceText):"<span class=dim>Live status isn't set up yet.</span>";},
+  copy:function(){copyName();return "<span class=ok>Copied my Discord username: logicplayeryt</span>";},
   date:function(){return new Date().toLocaleString();},
   echo:function(a){return esc(a);},
   clear:function(){out.innerHTML="";return null;},
-  sudo:function(){return "<span class=err>Nice try. You are not tah. 👑</span>";},
-  exit:function(){return "There is no escape. Type <span class=p>help</span>.";},
+  sudo:function(){return "<span class=err>Nice try. Only Tah has admin access. 👑</span>";},
+  exit:function(){return "There's no escape. Type <span class=p>help</span> instead.";},
   ls:function(){return "pfp.png  cs2-inventory.png  secrets.txt";},
-  cat:function(a){return a.trim()==="secrets.txt"?"<span class=dim>Access denied. Maybe join the Discord first.</span>":"cat: "+esc(a||"missing file name");}
+  cat:function(a){return a.trim()==="secrets.txt"?"<span class=dim>Access denied. Maybe join the Discord first.</span>":"<span class=err>cat: "+esc(a||"no file name given")+"</span>";}
 };
 function say(html){out.innerHTML+=html+"\n";scr.scrollTop=scr.scrollHeight;}
 function run(raw){
@@ -351,7 +369,7 @@ function run(raw){
     say("<span class=ok>Opening "+LINKS[name][1]+"…</span>\n");return;
   }
   var fn=COMMANDS[name];
-  if(!fn){say("<span class=err>command not found: "+esc(name)+"</span>. Type <span class=p>help</span>.\n");return;}
+  if(!fn){say("<span class=err>Command not found: "+esc(name)+"</span>. Type <span class=p>help</span> for a list.\n");return;}
   var res=fn(arg);
   if(res!==null)say(res+"\n");
 }
@@ -378,12 +396,12 @@ document.addEventListener("keydown",function(e){
 
 // Intro: types the lines one after another, then unlocks the prompt
 var lines=[
- ["whoami","LogicPlayerYT (aka tah)"],
- ["skills","Python, Java, Luau"],
- ["play","Counter-Strike 2, Roblox"],
- ["status","<span class=ok>Developer • Gamer • Creator</span>"]
+ ["whoami","LogicPlayerYT (aka Tah)"],
+ ["role","<span class=ok>Developer • Gamer • Creator</span>"],
+ ["skills","Linux, Python, Java, Luau"],
+ ["games","Roblox, Counter-Strike 2"]
 ];
-var HINT="<span class=dim>Type <span class=p>help</span> to see what you can do.</span>\n";
+var HINT="<span class=dim>Type <span class=p>help</span> to see all commands.</span>\n";
 function unlock(){term.classList.remove("typing");term.classList.add("ready");scr.scrollTop=scr.scrollHeight;}
 if(reduced){
   out.innerHTML=lines.map(function(l){return "<span class=p>$</span> "+l[0]+"\n"+l[1];}).join("\n\n")+"\n\n"+HINT;
